@@ -16,7 +16,6 @@ use Yii;
  */
 class Brand extends \yii\db\ActiveRecord
 {
-    public $img;
     /**
      * @inheritdoc
      */
@@ -35,8 +34,8 @@ class Brand extends \yii\db\ActiveRecord
             [['intro'], 'string'],
             [['sort', 'is_delete'], 'integer'],
             [['name'], 'string', 'max' => 50],
-//            [['logo'], 'string', 'max' => 255],
-            ['img','file','extensions' => ['png', 'jpg']],//图片的验证规则
+            [['logo'], 'string', 'max' => 255],
+//            ['img','file','extensions' => ['png', 'jpg']],//图片的验证规则
         ];
     }
 
@@ -49,7 +48,7 @@ class Brand extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => '品牌名称',
             'intro' => '品牌简介',
-            'img' => '品牌商标',
+            'logo' => '品牌商标',
             'sort' => '排序',
             'is_delete' => '状态 0->正常 1->删除',
         ];

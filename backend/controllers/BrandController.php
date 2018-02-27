@@ -8,6 +8,7 @@ use yii\web\UploadedFile;
 
 class BrandController extends \yii\web\Controller
 {
+    public $enableCsrfValidation=false;
     public function actionIndex()
     {
         $page = new Pagination();
@@ -26,13 +27,6 @@ class BrandController extends \yii\web\Controller
             //实例化
             $model->load($requeset->post());
             if($model->validate()){
-                $model->img = UploadedFile::getInstance($model,'img');
-                if($model->img){//如果有图片上传
-                    $file = '/upload/' . uniqid() . '.' . $model->img->extension;
-                    if($model->img->saveAs(\Yii::getAlias('@webroot').$file,0)){//如果保存成功
-                        $model->logo = $file;
-                    }
-                }
                 $model->is_delete=0;
                 $model->save(0);
                 \Yii::$app->session->setFlash('success','添加成功');
@@ -53,13 +47,6 @@ class BrandController extends \yii\web\Controller
             //实例化
             $model->load($requeset->post());
             if($model->validate()){
-                $model->img = UploadedFile::getInstance($model,'img');
-                if($model->img){//如果有图片上传
-                    $file = '/upload/' . uniqid() . '.' . $model->img->extension;
-                    if($model->img->saveAs(\Yii::getAlias('@webroot').$file,0)){//如果保存成功
-                        $model->logo = $file;
-                    }
-                }
                 $model->is_delete=0;
                 $model->save(0);
                 \Yii::$app->session->setFlash('success','修改成功');
@@ -87,6 +74,12 @@ class BrandController extends \yii\web\Controller
             return $this->redirect(['brand/index']);
         }
     }
-
+    public function actionUpdate(){
+        //实例化组件
+        $img = UploadedFile::getInstanceByName('file');
+        $file = '/upload/' . uniqid() . '.' . $img->extension;//文件路径
+        $img->saveAs(\Yii::getAlias('@webroot').$file);//文件保存
+        return json_encode(['path'=>$file]);
+    }
 
 }
