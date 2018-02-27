@@ -3,8 +3,8 @@
 ?>
 <table class="table table-bordered table-responsive">
     <tr>
-        <th>文章ID</th>
-        <th>文章名</th>
+        <th>分类ID</th>
+        <th>类名</th>
         <th>简介</th>
         <th>排序</th>
         <th>状态</th>
