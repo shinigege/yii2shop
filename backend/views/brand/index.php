@@ -26,6 +26,8 @@
     <?php endforeach;?>
     <tr>
         <td><a href="<?=\yii\helpers\Url::to(['brand/add'])?>" class="btn btn-primary">添加</a></td>
+        <td><a href="<?=\yii\helpers\Url::to(['brand/recovery'])?>" class="btn btn-primary">回收站</a></td>
+        <td><a href="<?=\yii\helpers\Url::to(['brand/index'])?>" class="btn btn-primary">品牌</a></td>
     </tr>
 
 </table>

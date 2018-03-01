@@ -49,7 +49,6 @@ uploader.on( 'uploadSuccess', function( file,response ) {
     var path = response.path;
     $('#brand-logo').val(path);
     $('#showImg').attr('src',path);//图片回显
-    
 });
 JS
 

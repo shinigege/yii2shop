@@ -24,6 +24,8 @@
     <?php endforeach;?>
     <tr>
         <td><a href="<?=\yii\helpers\Url::to(['article-category/add'])?>" class="btn btn-primary">添加</a></td>
+        <td><a href="<?=\yii\helpers\Url::to(['article-category/recovery'])?>" class="btn btn-primary">回收站</a></td>
+        <td><a href="<?=\yii\helpers\Url::to(['article-category/index'])?>" class="btn btn-primary">分类</a></td>
     </tr>
 
 </table>

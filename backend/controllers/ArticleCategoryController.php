@@ -14,7 +14,17 @@ class ArticleCategoryController extends \yii\web\Controller
         $query = ArticleCategory::find();
         $page->totalCount=$query->count();//总条数
         $page->defaultPageSize=3;//每页显示条数
-        $model = $query->offset($page->offset)->limit($page->limit)->all();
+        $model = $query->offset($page->offset)->limit($page->limit)->where(['is_delete'=>0])->all();
+        return $this->render('index',['model'=>$model,'page'=>$page]);
+    }
+    public function actionRecovery()
+    {
+//        $model = ArticleCategory::find()->all();
+        $page = new Pagination();
+        $query = ArticleCategory::find();
+        $page->totalCount=$query->count();//总条数
+        $page->defaultPageSize=3;//每页显示条数
+        $model = $query->offset($page->offset)->limit($page->limit)->where(['is_delete'=>1])->all();
         return $this->render('index',['model'=>$model,'page'=>$page]);
     }
     public function actionAdd(){
