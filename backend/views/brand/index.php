@@ -21,7 +21,6 @@
             <td><?=$row->is_delete?'已删除':'已上架'?></td>
             <td><?php echo $row->is_delete?\yii\bootstrap\Html::a("恢复",["brand/delete","id"=>$row->id],["class"=>"btn btn-warning"]):\yii\bootstrap\Html::a("删除",["brand/delete","id"=>$row->id],["class"=>"btn btn-warning"])?>
                 <?php echo $row->is_delete?'':\yii\bootstrap\Html::a("修改",["brand/edit","id"=>$row->id],["class"=>"btn btn-warning"])?></td>
-            </td>
         </tr>
     <?php endforeach;?>
     <tr>
