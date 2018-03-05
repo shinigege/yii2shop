@@ -37,7 +37,9 @@ class AdminForm extends Model{
             //验证密码 明文$model->password  密文$admin->password
             if(\Yii::$app->security->validatePassword($this->password,$admin->password_hash)){//登录成功
                 //保存用户信息
-                return \Yii::$app->user->login($admin);
+                //自动登录
+                $duration = $this->auto_load?7*24*3600:0;
+                return \Yii::$app->user->login($admin,$duration);
             }else{
                 $this->addError('password','密码错误');
             }

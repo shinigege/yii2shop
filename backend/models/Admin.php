@@ -25,6 +25,9 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
+    const SCENARIO_ADD ='add';
+    const SCENARIO_EDIT ='edit';
+    const SCENARIO_RESET ='reset';
     public $pwd;
     public $password;
     public $repwd;
@@ -38,13 +41,18 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'auth_key', 'pwd','repwd', 'email','password'], 'required'],
+            [['username', 'email'], 'required'],
             [['status', 'created_at', 'updated_at', 'last_login_time'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'last_login_ip'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
+            [['repwd','pwd'],'required','on'=>[self::SCENARIO_EDIT,self::SCENARIO_ADD]],
+            ['password','required','on'=>[self::SCENARIO_EDIT]],
+            ['pwd','required','on'=>[self::SCENARIO_RESET]],
+            ['repwd','validatePwd'],
+//            ['password','validateOldpwd']
         ];
     }
 
@@ -69,6 +77,19 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'last_login_ip' => '最后登录IP',
         ];
     }
+    public function validatePwd(){
+        $result= $this->repwd==$this->pwd;
+        if(!$result){
+            $this->addError('repwd','两次输入不一致');
+        }
+    }
+//    public function validateOldpwd(){
+//        $user = Yii::$app->user->identity;
+//        $resutl = Yii::$app->security->validatePassword($this->password,$user->password_hash);
+//        if(!$resutl){
+//            $this->addError('password','原密码错误');
+//        }
+//    }
 
     /**
      * Finds an identity by the given ID.
@@ -121,7 +142,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        // TODO: Implement getAuthKey() method.
+        return $this->auth_key;
     }
 
     /**
@@ -134,7 +155,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        // TODO: Implement validateAuthKey() method.
+       return $authKey==$this->auth_key;
     }
 
 

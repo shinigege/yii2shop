@@ -28,6 +28,7 @@ $id = \Yii::$app->user->id;//登录的ID
             <td><?=$row->last_login_ip?$row->last_login_ip:'无记录'?></td>
             <td><?php echo \yii\bootstrap\Html::a("删除",["admin/delete","id"=>$row->id],["class"=>"btn btn-danger"])?>
                 <?php echo \yii\bootstrap\Html::a("修改",["admin/update","id"=>$row->id],["class"=>"btn btn-primary"])?>
+                <?php echo Yii::$app->user->id==2?\yii\bootstrap\Html::a("改密",["admin/reset","id"=>$row->id],["class"=>"btn btn-warning"]):''//只有id为2的管理员可以修改别人的密码  ?>
                 </td>
         </tr>
     <?php endforeach;?>

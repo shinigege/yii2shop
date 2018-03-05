@@ -28,9 +28,10 @@
         </tr>
     <?php endforeach;?>
     <tr>
-        <td><a href="<?=\yii\helpers\Url::to(['article/add'])?>" class="btn btn-primary">添加</a></td>
-        <td><a href="<?=\yii\helpers\Url::to(['article/recovery'])?>" class="btn btn-primary">回收站</a></td>
-        <td><a href="<?=\yii\helpers\Url::to(['article/index'])?>" class="btn btn-primary">文章</a></td>
+        <td><?php
+            //            var_dump(strstr($_SERVER['REQUEST_URI'], '/goods/index'));//检测字符串中是否有该特定字符串
+            echo  strstr($_SERVER['REQUEST_URI'], '/article/index')? \yii\bootstrap\Html::a("回收站", ["article/recovery"], ["class" => "btn btn-warning"]) . '<td/>' . \yii\bootstrap\Html::a("添加", ["article/add"], ["class" => "btn btn-primary"]) : \yii\bootstrap\Html::a("返回文章", ["article/index"], ["class" => "btn btn-primary"]) ?>
+        </td>
     </tr>
 
 </table>
