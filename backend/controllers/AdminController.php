@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\Filter;
 use backend\models\Admin;
 use backend\models\AdminForm;
 use Codeception\Lib\ParamsLoader;
@@ -75,9 +76,6 @@ class AdminController extends \yii\web\Controller
 
                 \Yii::$app->session->setFlash('success', '添加成功');
                 return $this->redirect(['admin/index']);  //返回管理员列表
-            } else {
-                var_dump($model->getErrors());
-                exit();
             }
 
         }
@@ -129,9 +127,6 @@ class AdminController extends \yii\web\Controller
                 }
                 \Yii::$app->session->setFlash('success', '修改成功');
                 return $this->redirect(['admin/index']);  //返回管理员列表
-            } else {
-                var_dump($model->getErrors());
-                exit();
             }
 
         }
@@ -223,16 +218,10 @@ class AdminController extends \yii\web\Controller
                     $admin->last_login_ip = $_SERVER["REMOTE_ADDR"];
                     if ($admin->validate()) {
                         $admin->save();
-                    } else {
-                        var_dump($admin->getErrors());
-                        exit();
                     }
                     \Yii::$app->session->setFlash('success', '登录成功');
 
                     return $this->redirect(['admin/index']);
-                } else {
-                    var_dump($model->getErrors());
-                    exit();
                 }
             }
         }
@@ -266,9 +255,6 @@ class AdminController extends \yii\web\Controller
                 $model->save(0);
                 \Yii::$app->session->setFlash('success', '修改成功');
                 return $this->redirect(['admin/index']);//返回管理员列表
-            } else {
-                var_dump($model->getErrors());
-                exit();
             }
         }
 
@@ -283,6 +269,15 @@ class AdminController extends \yii\web\Controller
                 'class' => CaptchaAction::className(),
                 'minLength' => 3,//最短长度,
                 'maxLength' => 4,//zuicahng
+            ]
+        ];
+    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>Filter::class,
+                'except'=>['index','captcha','login','logout']
             ]
         ];
     }

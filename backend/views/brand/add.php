@@ -53,7 +53,11 @@ uploader.on( 'uploadSuccess', function( file,response ) {
 JS
 
 );
-echo '<img id="showImg" />';
+if ($model->getIsNewRecord()){
+    echo '<img id="showImg" src=""/>';
+}else{
+    echo '<img id="showImg" src="'.$model->logo.'"/>';
+}
 
 
 echo $form->field($model,'sort')->textInput();

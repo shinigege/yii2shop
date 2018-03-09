@@ -47,9 +47,6 @@ class BrandController extends \yii\web\Controller
                 $model->save(0);
                 \Yii::$app->session->setFlash('success', '添加成功');
                 return $this->redirect(['brand/index']);
-            } else {
-                var_dump($model->getErrors());
-                exit();
             }
         }
 
@@ -69,9 +66,6 @@ class BrandController extends \yii\web\Controller
                 $model->save(0);
                 \Yii::$app->session->setFlash('success', '修改成功');
                 return $this->redirect(['brand/index']);
-            } else {
-                var_dump($model->getErrors());
-                exit();
             }
         }
 
@@ -170,10 +164,13 @@ class BrandController extends \yii\web\Controller
             return json_encode(false);
         }
     }
-//    public function behaviors()
-//    {
-//        return [
-//            'class'=>Filter::className(),
-//        ];
-//    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>Filter::class,
+                'except'=>['update']
+            ]
+        ];
+    }
 }

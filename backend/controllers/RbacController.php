@@ -6,6 +6,7 @@
  * Time: 14:24
  */
 namespace backend\controllers;
+use backend\filters\Filter;
 use backend\models\Rbac;
 use yii\rbac\Role;
 use yii\web\Controller;
@@ -188,6 +189,14 @@ class RbacController extends Controller {
         $permission=$authManager->getRole($key);
         $result = $authManager->remove($permission);
         return json_encode($result);
+    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>Filter::class,
+            ]
+        ];
     }
 
 }

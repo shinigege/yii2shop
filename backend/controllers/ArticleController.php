@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\Filter;
 use backend\models\Article;
 use backend\models\ArticleDetail;
 use yii\data\Pagination;
@@ -43,9 +44,6 @@ class ArticleController extends \yii\web\Controller
                 $content->save();
                 \Yii::$app->session->setFlash('seccess', '添加成功');
                 return $this->redirect(['article/index']);
-            } else {
-                var_dump($model->getErrors());
-                exit();
             }
         }
         return $this->render('add', ['model' => $model, 'content' => $content]);
@@ -64,9 +62,6 @@ class ArticleController extends \yii\web\Controller
                 $content->save();
                 \Yii::$app->session->setFlash('seccess', '添加成功');
                 return $this->redirect(['article/index']);
-            } else {
-                var_dump($model->getErrors());
-                exit();
             }
         }
         return $this->render('add', ['model' => $model, 'content' => $content]);
@@ -116,6 +111,15 @@ class ArticleController extends \yii\web\Controller
                 'config' => [
                     "imageUrlPrefix" => \Yii::getAlias('@web'),//图片访问路径前缀,
                 ],
+            ]
+        ];
+    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>Filter::class,
+                'except'=>['upload']
             ]
         ];
     }

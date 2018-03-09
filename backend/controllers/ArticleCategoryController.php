@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\Filter;
 use backend\models\ArticleCategory;
 use yii\data\Pagination;
 
@@ -37,9 +38,6 @@ class ArticleCategoryController extends \yii\web\Controller
                 $model->save();
                 \Yii::$app->session->setFlash('success','添加成功');
                 return $this->redirect(['article-category/index']);
-            }else{
-                var_dump($model->getErrors());
-                exit();
             }
         }
         return $this->render('add',['model'=>$model]);
@@ -53,9 +51,6 @@ class ArticleCategoryController extends \yii\web\Controller
                 $model->save();
                 \Yii::$app->session->setFlash('success','修改成功');
                 return $this->redirect(['article-category/index']);
-            }else{
-                var_dump($model->getErrors());
-                exit();
             }
         }
         return $this->render('add',['model'=>$model]);
@@ -86,6 +81,14 @@ class ArticleCategoryController extends \yii\web\Controller
             return json_encode(false);
         }
 
+    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>Filter::class,
+            ]
+        ];
     }
 
 }

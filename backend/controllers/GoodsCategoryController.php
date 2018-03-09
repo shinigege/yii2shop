@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\Filter;
 use backend\models\GoodsCategory;
 use yii\data\Pagination;
 
@@ -84,5 +85,14 @@ class GoodsCategoryController extends \yii\web\Controller
     public function actionZtree(){
         $model = GoodsCategory::find()->asArray()->select(['id','parent_id','name'])->all();
         return $this->renderPartial('text',['model'=>json_encode($model)]);
+    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>Filter::class,
+                'except'=>['ztree']
+            ]
+        ];
     }
 }

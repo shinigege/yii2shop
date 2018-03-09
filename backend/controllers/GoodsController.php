@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\Filter;
 use backend\models\GoodsCategory;
 use backend\models\GoodsGallery;
 use Qiniu\Auth;
@@ -288,6 +289,15 @@ class GoodsController extends \yii\web\Controller
                 'config' => [
                     "imageUrlPrefix" => \Yii::getAlias('@web'),//图片访问路径前缀,
                 ],
+            ]
+        ];
+    }
+    public function behaviors()
+    {
+        return [
+            'rbac'=>[
+                'class'=>Filter::class,
+                'except'=>['upload','save']
             ]
         ];
     }
