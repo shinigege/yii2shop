@@ -11,20 +11,20 @@ class ArticleController extends \yii\web\Controller
     public function actionIndex()
     {
         $page = new Pagination();
-        $query = Article::find();
+        $query = Article::find()->where(['is_delete' => 0]);
         $page->totalCount = $query->count();//总条数
         $page->defaultPageSize = 3;//每页显示条数
-        $article = $query->offset($page->offset)->limit($page->limit)->where(['is_delete' => 0])->all();
+        $article = $query->offset($page->offset)->limit($page->limit)->all();
         return $this->render('index', ['article' => $article, 'page' => $page]);
     }
 
     public function actionRecovery()
     {
         $page = new Pagination();
-        $query = Article::find();
+        $query = Article::find()->where(['is_delete' => 1]);
         $page->totalCount = $query->count();//总条数
         $page->defaultPageSize = 3;//每页显示条数
-        $article = $query->offset($page->offset)->limit($page->limit)->where(['is_delete' => 1])->all();
+        $article = $query->offset($page->offset)->limit($page->limit)->all();
         return $this->render('index', ['article' => $article, 'page' => $page]);
     }
 
@@ -94,6 +94,17 @@ class ArticleController extends \yii\web\Controller
             $model->save();
             \Yii::$app->session->setFlash('success', '恢复成功');
             return $this->redirect(['article/index']);
+        }
+    }
+    public function actionDeletes(){
+        $id = $_POST['id'];
+        $model = Article::findOne($id);
+        $model->is_delete = 1;
+        $reusult = $model->save();
+        if($reusult){
+            return json_encode(true);
+    }else{
+        return json_encode(false);
         }
     }
 

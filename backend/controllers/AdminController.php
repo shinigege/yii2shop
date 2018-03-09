@@ -46,14 +46,14 @@ class AdminController extends \yii\web\Controller
     public function actionAdd()
     {
         $model = new Admin();
-        $model->scenario=Admin::SCENARIO_ADD;
+        $model->scenario = Admin::SCENARIO_ADD;
         $request = \Yii::$app->request;
         if ($request->isPost) {
             //加载数据
             $model->load($request->post());
             $model->password_reset_token = uniqid();
             $model->created_at = time();
-            $model->auth_key=\Yii::$app->security->generateRandomString();
+            $model->auth_key = \Yii::$app->security->generateRandomString();
             //实例化表单组件
             if ($model->validate()) {
                 if ($model->repwd != $model->pwd) {
@@ -62,6 +62,17 @@ class AdminController extends \yii\web\Controller
                 }
                 $model->password_hash = \Yii::$app->security->generatePasswordHash($model->pwd);
                 $model->save(0);
+//                var_dump($model->id);
+//                var_dump($model->arr);exit();
+                //=========添加角色==================
+                $authManager = \Yii::$app->authManager;
+
+                foreach ($model->arr as $key => $value) {
+                    $role = $authManager->getRole($value);
+                    $authManager->assign($role, $model->id);
+                }
+
+
                 \Yii::$app->session->setFlash('success', '添加成功');
                 return $this->redirect(['admin/index']);  //返回管理员列表
             } else {
@@ -72,18 +83,50 @@ class AdminController extends \yii\web\Controller
         }
         return $this->render('add', ['model' => $model]);
     }
+
     public function actionUpdate($id)
     {
-        $model =Admin::findOne($id);
+        $model = Admin::findOne($id);
+        $authManager = \Yii::$app->authManager;
+        //========多选框回显=================
+        $arr = $authManager->getAssignments($id);
+//        var_dump($arr);
+//        $roles = $authManager->getRole($id);
+//        var_dump($arr);exit();
+        $roles = [];
+        $i = 0;
+        foreach ($arr as $m => $s) {
+            $roles[$i] = $m;
+            $i++;
+        }
+//        var_dump($roles);exit();
+        $model->arr = $roles;
+        //========多选框回显=================
+
         $request = \Yii::$app->request;
         if ($request->isPost) {
             //加载数据
+            echo '<pre>';
+            var_dump($request->post());
             $model->load($request->post());
             $model->password_reset_token = uniqid();
             $model->updated_at = time();
+            $model->arr = $request->post('Admin')['arr'];
             //实例化表单组件
             if ($model->validate()) {
+//                var_dump($model->arr);
+
+//                exit();
+
                 $model->save(0);
+
+//                echo '<pre>';
+//                var_dump($arr);exit();
+                $authManager->revokeAll($id);
+                foreach ($model->arr as $key => $value) {
+                    $role = $authManager->getRole($value);
+                    $authManager->assign($role, $model->id);
+                }
                 \Yii::$app->session->setFlash('success', '修改成功');
                 return $this->redirect(['admin/index']);  //返回管理员列表
             } else {
@@ -100,21 +143,21 @@ class AdminController extends \yii\web\Controller
     {
 //        $model = new Admin();
         $admin = Admin::findOne($id);
-        $admin->scenario=Admin::SCENARIO_EDIT;
+        $admin->scenario = Admin::SCENARIO_EDIT;
 //        var_dump($model);exit;
         $request = \Yii::$app->request;
         if ($request->isPost) {
             //加载数据
             $admin->load($request->post());
-            $admin->auth_key=\Yii::$app->security->generateRandomString();
+            $admin->auth_key = \Yii::$app->security->generateRandomString();
             //实例化表单组件
             if ($admin->validate()) {
 
-                if (\Yii::$app->security->validatePassword($admin->password,$admin->password_hash)){
+                if (\Yii::$app->security->validatePassword($admin->password, $admin->password_hash)) {
                     //验证成功
-                }else{
+                } else {
                     \Yii::$app->session->setFlash('error', '修改失败,原密码错误');
-                    return $this->redirect(['admin/edit',"id"=>\Yii::$app->user->id]);  //返回管理员列表
+                    return $this->redirect(['admin/edit', "id" => \Yii::$app->user->id]);  //返回管理员列表
                 }
                 $admin->updated_at = time();
                 $admin->password_hash = \Yii::$app->security->generatePasswordHash($admin->pwd);
@@ -128,12 +171,17 @@ class AdminController extends \yii\web\Controller
         return $this->render('edit', ['model' => $admin]);
     }//修改只能修改自己的!!!  先不做
 
-    public function actionDelete($id)
+    public function actionDelete()
     {
+        $id = $_POST['id'];
         $model = Admin::findOne($id);
-        $model->delete();
-        \Yii::$app->session->setFlash('success', '删除成功');
-        return $this->redirect(['admin/index']);  //返回管理员列表
+        $result = $model->delete();
+
+        if ($result) {
+            return json_encode(true);
+        } else {
+            return json_encode(false);
+        }
     }
 
     public function actionLogin() //用户登录
@@ -182,7 +230,7 @@ class AdminController extends \yii\web\Controller
                     \Yii::$app->session->setFlash('success', '登录成功');
 
                     return $this->redirect(['admin/index']);
-                }else{
+                } else {
                     var_dump($model->getErrors());
                     exit();
                 }
@@ -203,25 +251,28 @@ class AdminController extends \yii\web\Controller
         \Yii::$app->session->setFlash('success', '退出成功');
         return $this->redirect(['admin/login']);
     }
-    public function actionReset($id){//直接充值密码
+
+    public function actionReset($id)
+    {//直接充值密码
         $model = Admin::findOne($id);
-        $model->scenario=Admin::SCENARIO_RESET;
+        $model->scenario = Admin::SCENARIO_RESET;
         $requset = \Yii::$app->request;
-        if($requset->isPost){
+        if ($requset->isPost) {
             $model->load($requset->post());
-            $model->auth_key=\Yii::$app->security->generateRandomString();
-            if($model->validate()){
+            $model->auth_key = \Yii::$app->security->generateRandomString();
+            if ($model->validate()) {
                 $model->updated_at = time();
                 $model->password_hash = \Yii::$app->security->generatePasswordHash($model->pwd);
                 $model->save(0);
                 \Yii::$app->session->setFlash('success', '修改成功');
                 return $this->redirect(['admin/index']);//返回管理员列表
-            }else{
-                var_dump($model->getErrors());exit();
+            } else {
+                var_dump($model->getErrors());
+                exit();
             }
         }
 
-        return $this->render('reset',['model'=>$model]);
+        return $this->render('reset', ['model' => $model]);
 
     }
 

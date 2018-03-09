@@ -11,20 +11,20 @@ class ArticleCategoryController extends \yii\web\Controller
     {
 //        $model = ArticleCategory::find()->all();
         $page = new Pagination();
-        $query = ArticleCategory::find();
+        $query = ArticleCategory::find()->where(['is_delete'=>0]);
         $page->totalCount=$query->count();//总条数
         $page->defaultPageSize=3;//每页显示条数
-        $model = $query->offset($page->offset)->limit($page->limit)->where(['is_delete'=>0])->all();
+        $model = $query->offset($page->offset)->limit($page->limit)->all();
         return $this->render('index',['model'=>$model,'page'=>$page]);
     }
     public function actionRecovery()
     {
 //        $model = ArticleCategory::find()->all();
         $page = new Pagination();
-        $query = ArticleCategory::find();
+        $query = ArticleCategory::find()->where(['is_delete'=>1]);
         $page->totalCount=$query->count();//总条数
         $page->defaultPageSize=3;//每页显示条数
-        $model = $query->offset($page->offset)->limit($page->limit)->where(['is_delete'=>1])->all();
+        $model = $query->offset($page->offset)->limit($page->limit)->all();
         return $this->render('index',['model'=>$model,'page'=>$page]);
     }
     public function actionAdd(){
@@ -74,6 +74,18 @@ class ArticleCategoryController extends \yii\web\Controller
             \Yii::$app->session->setFlash('success','恢复成功');
             return $this->redirect(['article-category/index']);
         }
+    }
+    public function actionDeletes(){
+        $id = $_POST['id'];
+        $model = ArticleCategory::findOne($id);
+        $model->is_delete=1;
+        $result = $model->save();
+        if($result){
+            return json_encode(true);
+        }else{
+            return json_encode(false);
+        }
+
     }
 
 }

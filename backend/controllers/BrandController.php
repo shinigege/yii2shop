@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\filters\Filter;
 use Qiniu\Auth;
 use Qiniu\Storage\UploadManager;
 use backend\models\Brand;
@@ -158,4 +159,21 @@ class BrandController extends \yii\web\Controller
             var_dump($ret);
         }
     }
+    public function actionDeletes(){
+        $id = $_POST['id'];
+        $model = Brand::findOne($id);
+        $model->is_delete=1;
+        $result = $model->save();
+        if($result){
+            return json_encode(true);
+        }else{
+            return json_encode(false);
+        }
+    }
+//    public function behaviors()
+//    {
+//        return [
+//            'class'=>Filter::className(),
+//        ];
+//    }
 }

@@ -90,7 +90,7 @@ class GoodsController extends \yii\web\Controller
             $query = Goods::find()->where(['status' => 1]);//只查询正常的状态
         }
         $page->totalCount = $query->count();//总条数
-        $page->defaultPageSize = 3;//每页显示条数
+        $page->defaultPageSize = 5;//每页显示条数
         $model = $query->offset($page->offset)->limit($page->limit)->all();
         $arr['name']=$requset->get()['Goods']['s_name']??'';
         $arr['s_sn']=$requset->get()['Goods']['s_sn']??'';
@@ -257,12 +257,27 @@ class GoodsController extends \yii\web\Controller
 //        return json_encode($model);//返回保存的路径作为回显
         return $this->render('img',['model'=>$model,'id'=>$id,'imgs'=>$imgs]);
     }
-    public function actionDeleteimg($id){
+    public function actionDeleteimg(){
+//        var_dump($_POST);exit();
+        $id = $_POST['id'];
         $model=GoodsGallery::findOne($id);
-        $id = $model->goods_id;
-        $model->delete();
-        \Yii::$app->session->setFlash('success', '删除成功');
-        return $this->redirect(['goods/img?id='.$id]);
+        $result = $model->delete();
+        if($result){
+            return json_encode(true);
+        }else{
+            return json_encode(false);
+        }
+    }
+    public function actionDeletes(){
+        $id = $_POST['id'];
+        $model = Goods::findOne($id);
+        $model->status=0;
+        $result = $model->save();
+        if($result){
+            return json_encode(true);
+        }else{
+            return json_encode(false);
+        }
     }
 
     public function actions()//副文本插件

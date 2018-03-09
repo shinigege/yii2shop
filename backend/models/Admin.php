@@ -31,6 +31,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
     public $pwd;
     public $password;
     public $repwd;
+    public $arr;
     public static function tableName()
     {
         return 'admin';
@@ -52,6 +53,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             ['password','required','on'=>[self::SCENARIO_EDIT]],
             ['pwd','required','on'=>[self::SCENARIO_RESET]],
             ['repwd','validatePwd'],
+            ['arr','safe'],
 //            ['password','validateOldpwd']
         ];
     }
@@ -75,6 +77,7 @@ class Admin extends \yii\db\ActiveRecord implements IdentityInterface
             'updated_at' => 'Updated At',
             'last_login_time' => '最后登录时间',
             'last_login_ip' => '最后登录IP',
+            'arr'=>'角色',
         ];
     }
     public function validatePwd(){

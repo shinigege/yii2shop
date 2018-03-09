@@ -4,6 +4,7 @@ echo $form->field($model,'username')->textInput();
 echo $form->field($model,'pwd')->passwordInput();
 echo $form->field($model,'repwd')->passwordInput();
 echo $form->field($model,'email')->textInput();
+echo $form->field($model,'arr')->checkboxList(\backend\models\Role::getRole());
 //上传头像
 echo "<button type='submit' class='btn btn-primary'>添加</button>";
 

@@ -17,8 +17,6 @@ echo <<<HTML
     <!--用来存放item-->
     <div id="fileList" class="uploader-list"></div>
     <div id="filePicker">选择图片</div>
-        
-
 </div>
 HTML;
 echo \yii\bootstrap\Html::a("返回", ["goods/index"], ["class" => "btn btn-primary"]);
@@ -60,6 +58,7 @@ uploader.on( 'uploadSuccess', function( file,response ) {
     },'json');
     location.reload();
 });
+
  // $("div").delegate('img','click',function(v) {
  //        console.log(v);
  //        alert('你确定吗');
@@ -71,9 +70,44 @@ JS
 ?>
 
 <?php foreach ($imgs as $img):?>
-<div>
+<p data-field="<?=$img['id']?>">
         <img src="<?=$img['path']?>"id="<?=$img['id']?>" alt="">
-    <?php echo \yii\bootstrap\Html::a("删除", ["goods/deleteimg", "id" => $img['id']], ["class" => "btn btn-danger"]) ?>
-</div>
+    <?php echo \yii\bootstrap\Html::a("删除", null, ["class" => "btn btn-danger"]) ?>
+</p>
 <?php endforeach;?>
+<?php
+$this->registerJs(<<<js
+         $('p').delegate('.btn-danger','click',function () {
+            if(confirm('你确定删除吗?')){
+                // console.log(111);
+             console.log($(this));//找到自己
+             var tr = $(this).closest('p');
+             var id = {};
+             id['id'] = tr.attr('data-field');
+             // console.log(id);
+             // console.log(tr);
+             
+             $.post('deleteimg',id,function(re) {
+               if(re){
+                   tr.fadeOut();//删除
+               }
+              
+             });
+             
+             // var id = {};
+             // id['id'] = tr.find('td[data-field=goods]');
+             // console.log(id);
+
+            
+                //    alert("这里确定删除");
+
+            }else {
+                // console.log(222)
+                //    alert("这里取消删除");
+
+            }
+         })
+js
+
+);
 

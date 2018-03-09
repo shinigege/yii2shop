@@ -71,15 +71,15 @@ class GoodsCategoryController extends \yii\web\Controller
         $type[]=['name'=>'顶级分类','id'=>0,'parent_id'=>0];
         return $this->render('add',['model'=>$model,'type'=>json_encode($type)]);
     }
-    public function actionDelete($id){
+    public function actionDeletes(){
+        $id = $_POST['id'];
         $model = GoodsCategory::findOne($id);
         if($model->parent_id){
             $model->delete();
         }else{
             $model->deleteWithChildren();
         }
-        \Yii::$app->session->setFlash('success','删除成功');
-        return $this->redirect(['goods-category/index']);
+
     }
     public function actionZtree(){
         $model = GoodsCategory::find()->asArray()->select(['id','parent_id','name'])->all();
