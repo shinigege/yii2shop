@@ -26,9 +26,9 @@ $id = \Yii::$app->user->id;//登录的ID
                 <td><?= $row->updated_at == 0 ? '无记录' : date('Y-m-d H:i:s', $row->updated_at) ?></td>
                 <td><?= $row->last_login_time ? date('Y-m-d H:i:s', $row->last_login_time) : '无记录' ?></td>
                 <td><?= $row->last_login_ip ? $row->last_login_ip : '无记录' ?></td>
-                <td><?php echo \yii\bootstrap\Html::a("删除", null, ["class" => "btn btn-danger"]) ?>
-                    <?php echo \yii\bootstrap\Html::a("修改", ["admin/update", "id" => $row->id], ["class" => "btn btn-primary"]) ?>
-                    <?php echo Yii::$app->user->id == 2 ? \yii\bootstrap\Html::a("改密", ["admin/reset", "id" => $row->id], ["class" => "btn btn-warning"]) : ''//只有id为2的管理员可以修改别人的密码  ?>
+                <td><?php echo  Yii::$app->user->can('admin/delete')?\yii\bootstrap\Html::a("删除", null, ["class" => "btn btn-danger"]):'' ?>
+                    <?php echo Yii::$app->user->can('admin/update')?\yii\bootstrap\Html::a("修改", ["admin/update", "id" => $row->id], ["class" => "btn btn-primary"]):'' ?>
+                    <?php echo Yii::$app->user->can('admin/reset')?\yii\bootstrap\Html::a("改密", ["admin/reset", "id" => $row->id], ["class" => "btn btn-warning"]) : ''//只有id为2的管理员可以修改别人的密码  ?>
                 </td>
             </tr>
         <?php endforeach; ?>

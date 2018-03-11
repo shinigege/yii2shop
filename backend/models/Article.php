@@ -34,6 +34,7 @@ class Article extends \yii\db\ActiveRecord
             [['intro'], 'string'],
             [['article_category_id', 'sort', 'is_delete', 'create_time'], 'integer'],
             [['name'], 'string', 'max' => 50],
+
         ];
     }
 

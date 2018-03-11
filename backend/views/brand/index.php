@@ -20,7 +20,7 @@
             <td><?=$row->sort?></td>
             <td><?=$row->is_delete?'已删除':'已上架'?></td>
             <td><?php echo $row->is_delete?\yii\bootstrap\Html::a("恢复",["brand/delete","id"=>$row->id],["class"=>"btn btn-warning"]):\yii\bootstrap\Html::a("删除",null,["class"=>"btn btn-danger"])?>
-                <?php echo $row->is_delete?'':\yii\bootstrap\Html::a("修改",["brand/edit","id"=>$row->id],["class"=>"btn btn-warning"])?></td>
+                <?php echo $row->is_delete==false&&Yii::$app->user->can('brand/edit')?\yii\bootstrap\Html::a("修改",["brand/edit","id"=>$row->id],["class"=>"btn btn-warning"]):''?></td>
         </tr>
     <?php endforeach;?>
 
@@ -40,6 +40,7 @@ $this->registerJs(<<<js
              
              $.post('deletes',id,function() {
                tr.fadeOut();//删除
+               
                
              });
              // var id = {};

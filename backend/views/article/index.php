@@ -21,9 +21,9 @@
             <td><?=$row->sort?></td>
             <td><?=date('Y-m-d H:i:s',$row->create_time)?></td>
             <td><?=$row->is_delete?'已删除':'已上架'?></td>
-            <td><?php echo $row->is_delete?\yii\bootstrap\Html::a("恢复",["article/delete","id"=>$row->id],["class"=>"btn btn-warning"]):\yii\bootstrap\Html::a("删除",null,["class"=>"btn btn-danger"])?>
-                <?php echo $row->is_delete?'':\yii\bootstrap\Html::a("修改",["article/edit","id"=>$row->id],["class"=>"btn btn-primary"])?>
-                <?php echo $row->is_delete?'':\yii\bootstrap\Html::a("查看",["article/show","id"=>$row->id],["class"=>"btn btn-info"])?>
+            <td><?php echo $row->is_delete&& Yii::$app->user->can('article/delete')?\yii\bootstrap\Html::a("恢复",["article/delete","id"=>$row->id],["class"=>"btn btn-warning"]):\yii\bootstrap\Html::a("删除",null,["class"=>"btn btn-danger"])?>
+                <?php echo $row->is_delete==false&& Yii::$app->user->can('article/edit')?\yii\bootstrap\Html::a("修改",["article/edit","id"=>$row->id],["class"=>"btn btn-primary"]):''?>
+                <?php echo $row->is_delete==false&& Yii::$app->user->can('article/show')?\yii\bootstrap\Html::a("查看",["article/show","id"=>$row->id],["class"=>"btn btn-info"]):''?>
             </td>
         </tr>
     <?php endforeach;?>
