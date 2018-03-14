@@ -45,8 +45,14 @@ return [
             'suffix'=>'.html',//SEO
             'rules' => [
             ],
-            
         ],
+        'sms'=>[
+            'class'=>\frontend\aliyun\SmsHandler::class,
+            'sk'=>'as4Ov3z1Rwunq8kKFFhybzBa6X0IDr',
+            'ak'=>'LTAIPzzVO2PZnt3c',
+            'sign'=>'伟伟安逸',
+            'template'=>'SMS_126935079',
+        ]
 
     ],
     'params' => $params,

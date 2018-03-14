@@ -13,12 +13,19 @@ class AddressController extends \yii\web\Controller
     //添加
     public function actionAddress(){
         $request = \Yii::$app->request;
-        $address = Address::find()->asArray()->all();
+        $address = Address::find()->where(['member_id'=>\Yii::$app->user->id])->asArray()->all();
         $model = new Address();
         if($request->isPost){
 
             $model->load($request->post(),'');
-            $model->auto=$model->auto=='on'?1:0;
+            if($model->auto=='on'){
+                $auto=Address::findOne(['auto'=>1]);
+                $auto->auto=0;
+                $auto->save();
+                $model->auto=1;
+            }else{
+                $model->auto=0;
+            }
             if($model->validate()){
                 $model->member_id = \Yii::$app->user->id;
                 $model->save(0);
@@ -38,6 +45,17 @@ class AddressController extends \yii\web\Controller
 //        var_dump($arr);
         return json_encode($arr);
     }
+    public function actionAuto($id){
+        $val = Address::findOne(['id'=>$id]);
+        $auto=Address::findOne(['auto'=>1]);
+        $auto->auto=0;
+        $auto->save();
+        $val->auto=1;
+        $val->save();
+        return $this->redirect(['address/address']);
+
+
+    }
     //修改保存
     public function actionUpdate(){
         $request = \Yii::$app->request;
@@ -49,7 +67,14 @@ class AddressController extends \yii\web\Controller
 
             $val = Address::findOne(['id'=>$request->post('id')]);
             $val->load($request->post(),'');
-            $val->auto=$val->auto=='on'?1:0;
+            if($val->auto=='on'){
+                $auto=Address::findOne(['auto'=>1]);
+                $auto->auto=0;
+                $auto->save();
+                $val->auto=1;
+            }else{
+                $val->auto=0;
+            }
             if($val->validate()){
 //
 //                var_dump($val);

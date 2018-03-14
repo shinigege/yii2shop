@@ -40,8 +40,6 @@ $this->registerJs(<<<js
              
              $.post('deletes',id,function() {
                tr.fadeOut();//删除
-               
-               
              });
              // var id = {};
              // id['id'] = tr.find('td[data-field=goods]');

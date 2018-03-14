@@ -482,7 +482,8 @@
                 <dd>
                     <a href="" class="edit" data="<?=$v['id']?>">修改</a>
                     <a href="" class="delete" data="<?=$v['id']?>">删除</a>
-                    <a href="">设为默认地址</a>
+                    <?php echo $v['auto']==0?'<a href="'.\yii\helpers\Url::to(['address/auto','id'=>$v['id']]).'">设为默认地址</a>':''?>
+
                 </dd>
             </dl>
             <?php endforeach;?>
@@ -513,8 +514,10 @@
                         <label for=""><span>*</span>手机号码：</label>
                         <input type="text" name="tel" id="tel" class="txt" />
                     </li>
+
                     <li>
                         <label for="">&nbsp;</label>
+
                         <input type="checkbox" name="auto"  id="auto" class="check" />设为默认地址
                     </li>
                     <li>

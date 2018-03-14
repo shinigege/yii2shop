@@ -81,7 +81,7 @@
                     </li>
                     <li>
                         <label for="">验证码：</label>
-                        <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="captcha" disabled="disabled" id="captcha"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
+                        <input type="text" class="txt" value="" placeholder="请输入短信验证码" name="code" disabled="disabled" id="code"/> <input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:3px 8px"/>
 
                     </li>
 
@@ -147,6 +147,18 @@
 <script type="text/javascript" src="/js/jquery-1.8.3.min.js"></script>
 <script src="http://static.runoob.com/assets/jquery-validation-1.14.0/dist/jquery.validate.min.js"></script>
 <script type="text/javascript">
+    $('#get_captcha').click(function () {
+        //传入tel
+        var tel={};
+        tel['tel']=$('#tel').val();
+        $.getJSON('sms.html',tel,function (v) {
+            if(v){
+                console.log('1')
+            }else {
+                console.log('0')
+            }
+        })
+    })
     $().ready(function() {
         $("#signupForm").validate({
             rules: {
@@ -178,7 +190,20 @@
                     rangelength:[11,11],
                     number:true
                 },
-                checkcode:"validate",
+                code:{
+                    required: true,
+                    minlength: 4,
+                    remote:{
+                        url:"<?=\yii\helpers\Url::to(['member/validate-sms'])?>",
+                        data:{
+                            tel: function () {
+                                return $('#tel').val();
+                            }
+                        }
+                    }
+                },
+
+                
 
             },
             messages: {
@@ -211,6 +236,11 @@
                     rangelength:"手机号长度为11位",
                     number:"请输入数字",
                 },
+                code:{
+                    required: "请输入验证码",
+                    minlength: "验证码位数至少4位",
+                    remote:"验证码错误",
+                }
 
 
                 /*
@@ -241,7 +271,7 @@
     $('#change_captcha').click();
     function bindPhoneNum(){
         //启用输入框
-        $('#captcha').prop('disabled',false);
+        $('#code').prop('disabled',false);
 
         var time=30;
         var interval = setInterval(function(){
