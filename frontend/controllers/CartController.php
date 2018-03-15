@@ -68,30 +68,6 @@ class CartController extends \yii\web\Controller
 //            var_dump(empty($cookie));exit();
             return $this->render('cart',['cookies'=>$carts]);
         }else{//没有登录的情况
-            $cookie = \Yii::$app->request->cookies;
-            $cookies =\Yii::$app->response->cookies;
-            $value = $cookie->getValue('carts');
-            if($value){//如果存在cookie 则加入数据库
-                $carts = unserialize($value);
-            }else{
-                $carts = [];
-            }
-
-
-            foreach ($carts as $key =>$cart){
-                if(Cart::findOne(['goods_id'=>$key,'member_id'=>\Yii::$app->user->id])){//如果有记录
-                    $model = Cart::findOne(['goods_id'=>$key,'member_id'=>\Yii::$app->user->id]);
-                    $model->amount += $cart;
-                    $model->save();
-                }else{
-                    $model = new Cart();
-                    $model->goods_id = $key;
-                    $model->amount = $cart;
-                    $model->member_id = \Yii::$app->user->id;
-                    $model->save();
-                }
-            };
-            $cookies->remove('carts');
             $cart = Cart::find()->where(['member_id'=>\Yii::$app->user->id])->all();
             return $this->render('rcart',['cookies'=>$cart]);
         }
@@ -111,7 +87,7 @@ class CartController extends \yii\web\Controller
             }
             if($amount){//直接覆盖上一个
                 $carts[$id] = $amount;
-            }else{
+            }else{//删除
                 unset($carts[$id]);
             }
             $cookie = new Cookie();

@@ -5,6 +5,7 @@ namespace frontend\controllers;
 use backend\models\GoodsCategory;
 use frontend\aliyun\SignatureHelper;
 use frontend\models\Brand;
+use frontend\models\Cart;
 use frontend\models\Goods;
 use frontend\models\GoodsGallery;
 use frontend\models\GoodsIntro;
@@ -105,6 +106,30 @@ class MemberController extends \yii\web\Controller
             $model->load($request->post(), '');
             if ($model->validate()) {
                 if ($model->login()) {//登录成功
+                    $cookie = \Yii::$app->request->cookies;
+                    $cookies =\Yii::$app->response->cookies;
+                    $value = $cookie->getValue('carts');
+                    if($value){//如果存在cookie 则加入数据库
+                        $carts = unserialize($value);
+                    }else{
+                        $carts = [];
+                    }
+
+//把cookie中存的值加入数据库
+                    foreach ($carts as $key =>$cart){
+                        if(Cart::findOne(['goods_id'=>$key,'member_id'=>\Yii::$app->user->id])){//如果有记录
+                            $model = Cart::findOne(['goods_id'=>$key,'member_id'=>\Yii::$app->user->id]);
+                            $model->amount += $cart;
+                            $model->save();
+                        }else{
+                            $model = new Cart();
+                            $model->goods_id = $key;
+                            $model->amount = $cart;
+                            $model->member_id = \Yii::$app->user->id;
+                            $model->save();
+                        }
+                    };
+                    $cookies->remove('carts');
                     $id = \Yii::$app->user->id;//登录的ID
                     $admin = Member::findOne($id);
                     $admin->last_login_time = time();

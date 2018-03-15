@@ -68,8 +68,7 @@
         </tr>
         </thead>
         <tbody>
-        <?php $sum = 0;
-        foreach ($cookies as $cookie): ?>
+        <?php $sum = 0;foreach ($cookies as $cookie): ?>
             <tr data-id="<?= $cookie->goods_id ?>">
                 <?php $good = \frontend\models\Goods::findOne(['id' => $cookie->goods_id]) ?>
                 <td class="col1"><a href=""><img src="<?= $good->logo ?>" alt=""/></a> <strong><a
@@ -94,7 +93,7 @@
     </table>
     <div class="cart_btn w990 bc mt10">
         <a href="" class="continue">继续购物</a>
-        <a href="" class="checkout">结 算</a>
+        <a href="<?=\yii\helpers\Url::to(['order/index'])?>" class="checkout">结 算</a>
     </div>
 </div>
 <!-- 主体部分 end -->
